@@ -15,7 +15,9 @@ class _SwitchWidgetState extends State<SwitchWidget> {
   bool _value = false;
   @override
   Widget build(BuildContext context) {
-    return SwitchListTile(value: _value,
+    return SwitchListTile(
+      contentPadding: EdgeInsets.all(0),
+        value: _value,
         title: Text(widget.title ?? ''),
         subtitle: Text(widget.subTitle ?? ''),
         onChanged: (value){

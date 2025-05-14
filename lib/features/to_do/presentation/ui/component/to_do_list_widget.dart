@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/res/styles.dart';
-import '../../../data/models/task.dart';
+import '../../../domain/entities/task.dart';
 
 class ToDoListWidget extends StatefulWidget {
   List<Task> todoList;
@@ -21,7 +21,7 @@ class _ToDoListState extends State<ToDoListWidget>{
           return GestureDetector(
             onTap: (){
               setState(() {
-                toDo.isComplete = !toDo.isComplete;
+                toDo.copyWith(isComplete: !toDo.isComplete);
               });
             },
             child: ToDoItem(toDo: toDo,),

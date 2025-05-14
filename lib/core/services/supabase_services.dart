@@ -1,28 +1,46 @@
+import 'dart:developer';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:bit_task/features/to_do/data/models/task.dart';
+
+import '../../features/to_do/data/models/task_dto.dart';
+import '../../features/to_do/domain/entities/task.dart';
 
 class SupabaseService {
   final SupabaseClient _client = Supabase.instance.client;
-  Future<List<Map<String, dynamic>>> fetchTodos(int userId) async {
 
+  String? getUserId() {
+    //return _client.auth.currentUser?.id;
+    return '0020ed0c-50e3-4731-bf58-5742dae56a43';
+  }
+
+  Future<List<Map<String, dynamic>>> fetchTodos(
+    String userId,
+    String date,
+  ) async {
+    log('FetchTodos');
     final response = await _client
         .from('task')
         .select()
         .eq('user_id', userId);
-        //.order('due_time');
+        //.like('start_time', '$date%');
+    print(response);
     return response;
   }
-  Future<void> addTodo(Task task, int userId) async {
-    await _client.from('task').insert({
-      'user_id': '0020ed0c-50e3-4731-bf58-5742dae56a43',
-      'title': task.title,
-      'note': task.note,
-      'start_time': task.startTime,
-      'end_time': task.endTime,
-      'is_repeatable': task.isRepeated,
-    'is_complete': task.isComplete,
-    'reminder': task.reminderTime,
-    });
+
+  Future<TaskDto> addTodo(TaskDto task) async {
+    final response =
+        await _client
+            .from('task')
+            .insert({task.toJson()..remove('id')})
+            .select()
+            .single();
+    return TaskDto.fromJson(response);
   }
 
+  Future<void> toggleIsComplete(Task task) async {
+    await _client
+        .from('task')
+        .update({'is_complete': task.isComplete})
+        .eq('id', task.id ?? 0);
+  }
 }
