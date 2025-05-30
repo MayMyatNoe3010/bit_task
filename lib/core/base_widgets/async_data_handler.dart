@@ -2,6 +2,8 @@ import 'package:bit_task/core/base_widgets/custom_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/to_do/presentation/ui/component/no_task_widget.dart';
+
 class AsyncDataHandler<T> extends ConsumerWidget {
   final AsyncValue<T> value;
   final Widget Function(BuildContext, T) onData;
@@ -11,7 +13,17 @@ class AsyncDataHandler<T> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return value.when(
-      data: (data) => onData(context, data),
+      
+      data: (data) {
+        final isEmpty = (data is Iterable && data.isEmpty) ||
+            (data is Map && data.isEmpty) ||
+            (data is String && data.isEmpty);
+        if (data == null || isEmpty) {
+        return NoTaskWidget();
+      }
+
+      return onData(context, data);
+      },
       error: (error, stackTrace) {
         return CustomErrorWidget(lbError: error.toString(), color: Colors.red);
       },
@@ -28,3 +40,5 @@ class AsyncDataHandler<T> extends ConsumerWidget {
     );
   }
 }
+
+

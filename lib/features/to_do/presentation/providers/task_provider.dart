@@ -23,8 +23,8 @@ class TaskNotifier extends StateNotifier<AsyncValue<List<Task>>> {
 
 
     try {
-      final result = await _client.fetchTodos(userId, date);
-      final tasks = (result as List).map((e) => TaskDto.fromJson(e).toDomain()).toList();
+      //final result = await _client.fetchTodos(userId, date);
+      final List<Task> tasks = [];//(result as List).map((e) => TaskDto.fromJson(e).toDomain()).toList();
       state = AsyncValue.data(tasks);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
